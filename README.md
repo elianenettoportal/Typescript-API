@@ -1,4 +1,4 @@
-# Project TypeScript
+## Project TypeScript
 
 TypeScript is a strongly typed, object-oriented, compiled programming language that builds on JavaScript.
 It is a superset of the JavaScript language, designed to give you better tooling at any scale.
@@ -56,10 +56,46 @@ To run o to the terninal and run the file that is in the package json test scrip
 
 > npm run dev ( trigger index.ts file)
 
+
+### Deploy Heroku process
+
+#### GITHUB
+> 1- create a repository in Github<br>
+> 2- copy new github URL<br>
+> 3- access your Backend code in VScode<br> 
+> 4- create a git track <br>
+>>git init <br>
+> 5- Add copied remote URL to where the files will be send to <br>
+>git remote add origin url <br>
+>git add . <br>
+>git push <br>
+
+#### HEROKU
+> 1- create a new app name =backend-typescript<br>
+> 2- configure deploy method. We can use heroku client or github, since we pushed the project to heroku this will be the method used here<br>
+> 3- deploy method git can automaticaly deploy all changes when it detects new pushes into the master branch.<br>
+> 3.1 - connect to your github <br>
+> 3.2 - select the repository created in guthub step above<br>
+> 3.3 - enable auto deploy<br>
+> 3.5 - Create a procfile (see it below)<br>
+> 3.6 - configure heroku settings (see it below)<br>
+> 3.4 do the first deploy manually from master<br>
+
+#### PROCFILE
+Procfile is a heroku file created in the root folder of the backend code. It has no extension only 'Procfile' This file says to heroku what alwas when the app<br>
+receives a new update and the deploy process is done, the server should execute this command to start the app. The command  <br>
+you should use the same command configured in the package.json in the script session. Copy the command 'start' fron scripts<br>
+Since heroku app are dynos that receive http requests, we need to create a web command.<br>
+> web: node dist/index.js
+
+#### SETTINGS
+In the heroku dashboard go to Settings tab -> Revew Config vars. Create the vars we have in the .env, the config variables we want to read from process.env<br>
+pluss the heroku app url<br>
+
 # Docker Image
 
 ### Create a Dockerfile for the Typescript Project - backend.dockerfile
-
+```
     FROM node:18-slim as base
     RUN mkdir -p /app
     WORKDIR /app
@@ -69,49 +105,51 @@ To run o to the terninal and run the file that is in the package json test scrip
     COPY backend_typescript/ .
     EXPOSE 3333
     CMD [ "npm", "start" ]
+```
+#### Create a Dockerfile for the React Project - frontend.dockerfile
+``` 
+    FROM node:18-slim as base
+    RUN mkdir -p /app
+    WORKDIR /app
+    COPY frontend_reactapp/package*.json ./
+    RUN npm install
+    COPY frontend_reactapp/ .
+    RUN npm run build
+    EXPOSE 3005
+    ENV NUXT_HOST=0.0.0.0
+    ENV NUXT_PORT=3005
+    CMD [ "npm", "start" ]
+```
 
-# Deploy Heroku process
+### Docker-compose - docker-compose.yml
+```
+    version: "3.7"
+    services:
+    ts-api:
+    image: playground-backend:latest
+    ports:
+      - 3333:3333
+    command: npm run start
 
-dev: run localy with nodemom that auto trinspile
-npm run dev 
+    web-frontend:
+    image: playground-frontend:latest
+    environment:
+      PORT: 3005
+      PROXY_API: http://playground-backend:3333/
+    ports:
+      - 3005:3005
+```
 
-npm run build  
-transpile the file to JavaScript before we run it with node.
-TypeScript files in your build directory.
+### Build Docker image<br>
+from root - package before backend code<br>
+```
+  docker build --file=backend_typescript/backend.dockerfile  -t playground-backend .
+  docker build --file=frontend_reactapp/frontend.dockerfile  -t playground-frontend .
+```
+### Run contaier<br>
+```
+  docker-compose -f docker-compose.yml up
+```
 
-prod:
-npm run start 
 
-GITHUB
-1- create a repository in Github
-2- copy new github URL
-3- access your Backend code in VScode 
-4- create a git track 
->>git init 
-5- Add copied remote URL to where the files will be send to 
->git remote add origin https://github.com/elianenettoportal/backend_typescript.git
->git add .
->git push
-
-HEROKU
-1- create a new app name =backend-typescript
-2- configure deploy method. We can use heroku client or github, since we pushed the project to heroku this will be the method used here
-3- deploy method git can automaticaly deploy all changes when it detects new pushes into the master branch.
-3.1 - connect to your github 
-3.2 - select the repository created in guthub step above
-3.3 - enable auto deploy
-3.5 - Create a procfile (see it below)
-3.6 - configure heroku settings (see it below)
-3.4 do the first deploy manually from master
-
-PROCFILE
-Procfile is a heroku file created in the root folder of the backend code. It has no extension only 'Procfile' This file says to heroku what alwas when the app
-receives a new update and the deploy process is done, the server should execute this command to start the app. The command  
-you should use the same command configured in the package.json in the script session. Copy the command 'start' fron scripts
-Since heroku app are dynos that receive http requests, we need to create a web command.
-> web: node dist/index.js
-
-SETTINGS
-In the heroku dashboard go to Settings tab -> Revew Config vars. Create the vars we have in the .env, the config variables we want to read from process.env
-pluss the heroku app url
  
