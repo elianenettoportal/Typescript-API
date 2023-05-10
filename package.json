@@ -1,6 +1,10 @@
 {
   "name": "backend_typescript",
   "version": "1.0.0",
+  "engines": {
+    "node": "v19.8.1",
+    "npm": "9.5.1"
+  },
   "description": "",
   "main": "dist/index.js",
   "scripts": {
