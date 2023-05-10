@@ -71,3 +71,47 @@ To run o to the terninal and run the file that is in the package json test scrip
     CMD [ "npm", "start" ]
 
 # Deploy Heroku process
+
+dev: run localy with nodemom that auto trinspile
+npm run dev 
+
+npm run build  
+transpile the file to JavaScript before we run it with node.
+TypeScript files in your build directory.
+
+prod:
+npm run start 
+
+GITHUB
+1- create a repository in Github
+2- copy new github URL
+3- access your Backend code in VScode 
+4- create a git track 
+>>git init 
+5- Add copied remote URL to where the files will be send to 
+>git remote add origin https://github.com/elianenettoportal/backend_typescript.git
+>git add .
+>git push
+
+HEROKU
+1- create a new app name =backend-typescript
+2- configure deploy method. We can use heroku client or github, since we pushed the project to heroku this will be the method used here
+3- deploy method git can automaticaly deploy all changes when it detects new pushes into the master branch.
+3.1 - connect to your github 
+3.2 - select the repository created in guthub step above
+3.3 - enable auto deploy
+3.5 - Create a procfile (see it below)
+3.6 - configure heroku settings (see it below)
+3.4 do the first deploy manually from master
+
+PROCFILE
+Procfile is a heroku file created in the root folder of the backend code. It has no extension only 'Procfile' This file says to heroku what alwas when the app
+receives a new update and the deploy process is done, the server should execute this command to start the app. The command  
+you should use the same command configured in the package.json in the script session. Copy the command 'start' fron scripts
+Since heroku app are dynos that receive http requests, we need to create a web command.
+> web: node dist/index.js
+
+SETTINGS
+In the heroku dashboard go to Settings tab -> Revew Config vars. Create the vars we have in the .env, the config variables we want to read from process.env
+pluss the heroku app url
+ 
