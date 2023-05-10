@@ -1,3 +1,9 @@
+### Next Steps in this project:
+1. Implement ORM
+2. Implement Graphql
+3. Implement TDD
+
+
 ## Project TypeScript
 
 TypeScript is a strongly typed, object-oriented, compiled programming language that builds on JavaScript.
