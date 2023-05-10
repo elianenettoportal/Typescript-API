@@ -24,8 +24,8 @@ const options: cors.CorsOptions = {
   origin: allowedOrigins
 };
 
-// app.use(cors(options)); this will force only allowed origins to access BE
-app.use(cors()); // for this project since it is a learning process i will keep it empty allowing all
+app.use(cors(options)); this will force only allowed origins to access BE
+//app.use(cors()); // for this project since it is a learning process i will keep it empty allowing all
 
 // routes
 app.use('/', routes);
